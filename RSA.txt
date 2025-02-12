@@ -1,0 +1,68 @@
+import java.util.Scanner;
+
+public class Rsa {
+
+    
+    public static int modExp(int base, int exp, int mod) {
+        int result = 1;
+        for (int i = 1; i <= exp; i++) {
+            result = (result * base) % mod;
+        }
+        return result;
+    }
+
+    
+    public static int gcd(int a, int b) {
+        if (b == 0)
+            return a;
+        return gcd(b, a % b);
+    }
+
+    public static void main(String[] args) {
+        int message, plainText, cipherText;
+        int n, d = 0, e, phi, p, q;
+
+        Scanner scanner = new Scanner(System.in);
+
+        
+        System.out.println("Enter two prime numbers (p and q): ");
+        p = scanner.nextInt();
+        q = scanner.nextInt();
+
+        
+        System.out.println("Enter the message (as an integer): ");
+        message = scanner.nextInt();
+
+        
+        n = p * q;
+        phi = (p - 1) * (q - 1);
+
+        
+        do {
+            System.out.print("Choose the value of e (1 < e < " + phi + ") such that gcd(phi, e) = 1: ");
+            e = scanner.nextInt();
+        } while (e <= 1 || e >= phi || gcd(phi, e) != 1);
+
+        
+        for (int i = 1; i < phi; i++) {
+            if ((i * e) % phi == 1) {
+                d = i;
+                break;
+            }
+        }
+
+        
+        System.out.println("The public key pair is (" + e + ", " + n + ")");
+        System.out.println("The private key pair is (" + d + ", " + n + ")");
+
+        
+        cipherText = modExp(message, e, n);
+        System.out.println("Cipher text = " + cipherText);
+
+        
+        plainText = modExp(cipherText, d, n);
+        System.out.println("Plain text = " + plainText);
+
+        scanner.close(); 
+    }
+}
